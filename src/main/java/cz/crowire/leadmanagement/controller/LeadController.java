@@ -32,9 +32,10 @@ public class LeadController {
   }
 
   @PostMapping
-  public Lead createLead(@RequestBody Lead lead) {
+  public ResponseEntity<Lead> createLead(@RequestBody Lead lead) {
     log.info("Creating new lead: {}", lead);
-    return leadRepository.save(lead);
+    Lead savedLead = leadRepository.save(lead);
+    return ResponseEntity.status(HttpStatus.CREATED).body(savedLead);
   }
 
   @PutMapping("/{id}")
@@ -46,7 +47,6 @@ public class LeadController {
       Lead lead = leadOptional.get();
       lead.setName(leadDetails.getName());
       lead.setEmail(leadDetails.getEmail());
-      lead.setStatus(leadDetails.getStatus());
       return new ResponseEntity<>(leadRepository.save(lead), HttpStatus.OK);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
